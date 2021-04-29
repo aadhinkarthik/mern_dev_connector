@@ -11,7 +11,8 @@ const connectDB = async () => {
         await mongoose.connect(db, {
             // To avoid deprecated behaviour
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            useCreateIndex: true
         });
         console.log('Database: Connected successfully to MongoDB Atlas');
 
@@ -21,4 +22,5 @@ const connectDB = async () => {
     }
 };
 
-module.exports = connectDB;
+// Better than module.exports = connectDB
+exports.connectDB = connectDB;
