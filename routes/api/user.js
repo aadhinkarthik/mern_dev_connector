@@ -5,6 +5,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const { trim } = require('../../middleware/helpers');
 
 // Get User Model
 const { User } = require('../../models/User');
@@ -12,13 +13,13 @@ const { User } = require('../../models/User');
 // @route  POST api/user
 // @desc   Register User
 // @access Public
-router.post('/', [
+router.post('/', [ trim, [
 
     // Pass Second params for custom error message
     check('fullName', 'Provide a valid Name').not().isEmpty(),
     check('email', 'Provide a valid Email').isEmail(),
     check('password', 'Provide a valid password with more than 8 characters').isLength({ min: 8 })
-], async (req, res) => {
+]], async (req, res) => {
 
     const errors = validationResult(req);
     if (! errors.isEmpty()) {
@@ -35,10 +36,12 @@ router.post('/', [
         let user = await User.findOne({ email: email });
         if (user) {
             // Reusing express validator error format for easy usage
-            return res.status(400).json({ errors: [
-                { msg: 'Hey! You already have an account. Try to Sign in' },
-                { param: "email" }
-            ] });
+            return res.status(400).json({
+                errors: [
+                    { msg: 'Hey! You already have an account. Try to Sign in' },
+                    { param: "email" }
+                ]
+            });
         }
 
         // Get avatar from gravatar
@@ -57,9 +60,10 @@ router.post('/', [
 
         // Use await when anything returns promise rather than 'then' 
 
+        // Alternate way for brcypt.hash(password, saltrounds)
+
         // Create Salt to do hashing, default 10 rounds
         const salt = await bcrypt.genSalt();
-
         user.password = await bcrypt.hash(password, salt);
 
         // Save user
@@ -81,7 +85,7 @@ router.post('/', [
             }
         );
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         res.status(500).send('Internal Server Error');
     }
 });

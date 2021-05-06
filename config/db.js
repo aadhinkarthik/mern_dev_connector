@@ -12,12 +12,13 @@ const connectDB = async () => {
             // To avoid deprecated behaviour
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useCreateIndex: true
+            useCreateIndex: true,
+            useFindAndModify: false
         });
         console.log('Database: Connected successfully to MongoDB Atlas');
 
-    } catch (err) {
-        console.log(err.message);
+    } catch (error) {
+        console.error(error.message);
         process.exit(1); // Exit process while failure
     }
 };
