@@ -1,0 +1,4 @@
+.monaco-editor .cursors-layer .cursor {
+    background: #12c2e9;
+    background: linear-gradient(to bottom, #f64f59, #c471ed, #12c2e9);
+}

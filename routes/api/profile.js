@@ -93,13 +93,13 @@ router.get('/user/:user_id', async (req, res) => {
         const profile = await Profile.findOne({ user: req.params.user_id }).populate('user', 'fullName avatar', User);
         
         if (! profile) {
-            return res.status(400).json({ errors: [{ msg: 'Profile is not found for this user'}] });
+            return res.status(404).json({ errors: [{ msg: 'Profile is not found for this user'}] });
         }
         res.json(profile);
     } catch (error) {
         console.error(error.message);
         if (error.kind == 'ObjectId') {
-            return res.status(400).json({ errors: [{ msg: 'Profile is not found for this user'}] });
+            return res.status(404).json({ errors: [{ msg: 'Profile is not found for this user'}] });
         }
         res.status(500).send('Internal Server Error');
     }
@@ -168,7 +168,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
     } catch (error) {
         console.error(error.message);
         if (error.kind == 'ObjectId') {
-            return res.status(400).json({ errors: [{ msg: 'Experience is not found for this user'}] });
+            return res.status(404).json({ errors: [{ msg: 'Experience is not found for this user'}] });
         }
         res.status(500).send('Internal Server Error');
     }
@@ -221,7 +221,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     } catch (error) {
         console.error(error.message);
         if (error.kind == 'ObjectId') {
-            return res.status(400).json({ errors: [{ msg: 'Education is not found for this user'}] });
+            return res.status(404).json({ errors: [{ msg: 'Education is not found for this user'}] });
         }
         res.status(500).send('Internal Server Error');
     }
@@ -257,7 +257,7 @@ router.get('/github/:username', (req, res) => {
             }
 
             res.json(JSON.parse(body));
-        })
+        });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Internal Server Error');
